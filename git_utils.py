@@ -95,4 +95,4 @@ class GitUtils(object):
 
         if has_changed is True:
             self.repo.git.commit('-m', message)
-            # self.repo.git.push('origin', branch)
+            self.repo.git.push('origin', branch)
