@@ -2,14 +2,16 @@ from datetime import datetime
 import logging
 import os
 
+from dotenv import load_dotenv
 from telegram.ext import CommandHandler, Filters, MessageHandler, Updater
 
-from .git_utils import GitUtils
+from git_utils import GitUtils
 
 
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+load_dotenv()
 
 TOKEN = os.getenv("TOKEN")
 URL = os.getenv("URL")
@@ -17,6 +19,7 @@ SSH_PATH = os.getenv("SSH_PATH")
 GIT_USERNAME = os.getenv("GIT_USERNAME")
 GIT_EMAIL = os.getenv("GIT_EMAIL")
 REPO_PATH = os.getenv("REPO_PATH")
+TELEGRAM_ID = os.getenv("TELEGRAM_ID")
 
 git = GitUtils(
     repo=URL,
@@ -30,7 +33,7 @@ git = GitUtils(
 
 
 def run(updater):
-    updater.start_pooling()
+    updater.start_polling()
 
 
 def add_handler(dispatcher):
@@ -48,11 +51,17 @@ def start(update, context):
 def send_message(update, context):
     note_text = update.message.text
 
+    if update.message.from_user.id != TELEGRAM_ID:
+        logger.info(note_text)
+        logger.info(f"Wrong User!, {update.message.from_user.id}")
+        message = "To use this, refer to https://github.com/zsinx6/inboxnote_bot"
+        context.bot.send_message(chat_id=update.effective_chat.id, text=message)
+        return
+
     logger.info(note_text)
 
     now = datetime.now()
     filename = now.strftime("%Y%m%d%H%M") + "_from_bot.md"
-
     folder_path = os.path.join(REPO_PATH, "Inbox")
 
     with open(os.path.join(folder_path, filename), 'w+') as note:

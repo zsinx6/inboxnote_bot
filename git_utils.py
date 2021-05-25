@@ -60,7 +60,7 @@ class GitUtils(object):
 
         if os.path.isdir(path):
             self.repo = Repo(path)
-            self.repo.git.pull('origin', 'master')
+            self.repo.git.pull('origin', 'main')
         else:
             os.makedirs(path)
             self.repo = Repo.clone_from(repo, path, env={'GIT_SSH': user['ssh']})
