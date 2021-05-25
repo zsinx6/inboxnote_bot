@@ -53,7 +53,9 @@ def send_message(update, context):
     now = datetime.now()
     filename = now.strftime("%Y%m%d%H%M") + "_from_bot.md"
 
-    with open(os.path.join(REPO_PATH, filename), 'w+') as note:
+    folder_path = os.path.join(REPO_PATH, "Inbox")
+
+    with open(os.path.join(folder_path, filename), 'w+') as note:
         note.write(note_text)
 
     git.commit(message='Auto commit for inbox note')
