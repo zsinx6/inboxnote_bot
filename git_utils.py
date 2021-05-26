@@ -88,6 +88,8 @@ class GitUtils(object):
 
         if self.repo.is_dirty() is True:
             for file in self.repo.git.diff(None, name_only=True).split('\n'):
+                if file == "":
+                    break
                 print(f'Added file: {file}')
                 self.repo.git.add(file)
                 if has_changed is False:

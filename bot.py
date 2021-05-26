@@ -19,7 +19,7 @@ SSH_PATH = os.getenv("SSH_PATH")
 GIT_USERNAME = os.getenv("GIT_USERNAME")
 GIT_EMAIL = os.getenv("GIT_EMAIL")
 REPO_PATH = os.getenv("REPO_PATH")
-TELEGRAM_ID = os.getenv("TELEGRAM_ID")
+TELEGRAM_ID = int(os.getenv("TELEGRAM_ID"))
 
 git = GitUtils(
     repo=URL,
