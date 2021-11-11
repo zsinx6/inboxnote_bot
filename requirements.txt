@@ -1,3 +1,5 @@
 GitPython==3.1.17
 python-dotenv==0.17.1
 python-telegram-bot==13.5
+black==19.10b0
+isort==5.6.4

@@ -1,10 +1,10 @@
 import os
+
 from git import Repo
 
 
 class GitUtils(object):
-
-    def __init__(self, repo: str, user: dict, path: str = ''):
+    def __init__(self, repo: str, user: dict, path: str = ""):
         """GitUtils initial method
         Examples
         --------
@@ -38,36 +38,38 @@ class GitUtils(object):
         """
         repo = repo.strip()
         path = os.path.join(os.getcwd(), path.strip())
-        _ = {'ssh': '', 'name': 'nobody', 'email': 'nobody@gmail.com'}
+        _ = {"ssh": "", "name": "nobody", "email": "nobody@gmail.com"}
         _.update(user)
         user = _
 
-        if not repo.startswith('git@'):
+        if not repo.startswith("git@"):
             raise Exception(
-                f'Invalid git checkout url: {repo}\n\n'
-                'Please make sure you are using the valid SSH url with the correct `git@github.com:account/repository.git` format\n\n'
+                f"Invalid git checkout url: {repo}\n\n"
+                "Please make sure you are using the valid SSH url with the correct `git@github.com:account/repository.git` format\n\n"
             )
 
-        if not os.path.isfile(user['ssh']):
+        if not os.path.isfile(user["ssh"]):
             raise Exception(
                 f'Missing custom SSH script {user["ssh"]}!\n\n'
-                'You must provide a custom SSH script which can be able to execute git commands with the correct SSH key.\n'
-                'The bash script should contain this line:\n\n'
+                "You must provide a custom SSH script which can be able to execute git commands with the correct SSH key.\n"
+                "The bash script should contain this line:\n\n"
                 'ssh -i <SSH_private_key> -oIdentitiesOnly=yes -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null "$@"\n\n'
             )
 
-        os.environ['GIT_SSH'] = user['ssh']
+        os.environ["GIT_SSH"] = user["ssh"]
 
         if os.path.isdir(path):
             self.repo = Repo(path)
-            self.repo.git.pull('origin', 'main')
+            self.repo.git.pull("origin", "main")
         else:
             os.makedirs(path)
-            self.repo = Repo.clone_from(repo, path, env={'GIT_SSH': user['ssh']})
-            self.repo.config_writer().set_value('user', 'name', user['name']).release()
-            self.repo.config_writer().set_value('user', 'email', user['email']).release()
+            self.repo = Repo.clone_from(repo, path, env={"GIT_SSH": user["ssh"]})
+            self.repo.config_writer().set_value("user", "name", user["name"]).release()
+            self.repo.config_writer().set_value(
+                "user", "email", user["email"]
+            ).release()
 
-    def commit(self, branch: str = 'main', message: str = 'Auto commit'):
+    def commit(self, branch: str = "main", message: str = "Auto commit"):
         """Basic commit method.
         This commit method will detect all file changes and doing `git add`, `git commit -m <message>`, and `git push <branch>` all at once.
         Parameters
@@ -81,20 +83,20 @@ class GitUtils(object):
 
         # Check if there's any untracked files
         for file in self.repo.untracked_files:
-            print(f'Added untracked file: {file}')
+            print(f"Added untracked file: {file}")
             self.repo.git.add(file)
             if has_changed is False:
                 has_changed = True
 
         if self.repo.is_dirty() is True:
-            for file in self.repo.git.diff(None, name_only=True).split('\n'):
+            for file in self.repo.git.diff(None, name_only=True).split("\n"):
                 if file == "":
                     break
-                print(f'Added file: {file}')
+                print(f"Added file: {file}")
                 self.repo.git.add(file)
                 if has_changed is False:
                     has_changed = True
 
         if has_changed is True:
-            self.repo.git.commit('-m', message)
-            self.repo.git.push('origin', branch)
+            self.repo.git.commit("-m", message)
+            self.repo.git.push("origin", branch)
