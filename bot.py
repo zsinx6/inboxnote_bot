@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 
 from dotenv import load_dotenv
-from telegram.ext import CommandHandler, Filters, MessageHandler, Updater 
+from telegram.ext import CommandHandler, Filters, MessageHandler, Updater
 
 from git_utils import GitUtils
 
